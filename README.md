@@ -159,10 +159,4 @@ jobs:
 - **Web Streams API** — `TransformStream` for streaming middleware
 - **Node.js 20+** — ESM modules, native fetch
 
-## Targeting Kindo
 
-This project demonstrates three capabilities Kindo looks for:
-
-1. **Model-Agnostic Architecture** — polymorphic providers with zero-downtime fallback
-2. **Security Policy Enforcement** — real-time credential/PII scanning without breaking streams
-3. **Production Observability** — typed audit logs, circuit breaker metrics, provider-level telemetry
