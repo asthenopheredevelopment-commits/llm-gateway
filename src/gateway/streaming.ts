@@ -50,16 +50,33 @@ export async function streamTransform(
 export function createSecurityTransformStream(
   scanner: (text: string) => { safe: boolean; filtered?: string },
 ): TransformStream<string, string> {
+  let buffer = ''
+
   return new TransformStream({
     transform(chunk, controller) {
-      const result = scanner(chunk)
+      buffer += chunk
+      const result = scanner(buffer)
       if (result.safe) {
         controller.enqueue(chunk)
+        buffer = ''
       } else if (result.filtered) {
-        controller.enqueue(result.filtered)
+        const prevLen = buffer.length - chunk.length
+        const newPortion = result.filtered.slice(prevLen)
+        if (newPortion.length > 0) {
+          controller.enqueue(newPortion)
+        }
+        buffer = ''
       }
     },
     flush(controller) {
+      if (buffer.length > 0) {
+        const result = scanner(buffer)
+        if (result.safe) {
+          controller.enqueue(buffer)
+        } else if (result.filtered) {
+          controller.enqueue(result.filtered)
+        }
+      }
       controller.terminate()
     },
   })

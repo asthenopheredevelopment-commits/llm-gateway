@@ -43,10 +43,11 @@ export function scanText(text: string): ScanResult {
   if (typeof text !== 'string') {
     return { safe: true, hasSecrets: false, hasPII: false, hasProhibitedContent: false, matches: [] }
   }
+  const normalized = text.normalize('NFKC')
   const matches: ScanResult['matches'] = []
 
   for (const pattern of API_KEY_PATTERNS) {
-    const found = text.match(pattern)
+    const found = normalized.match(pattern)
     if (found) {
       for (const value of found) {
         if (value.length >= 20 && !isCommonWord(value)) {
@@ -57,7 +58,7 @@ export function scanText(text: string): ScanResult {
   }
 
   for (const pattern of PII_PATTERNS) {
-    const found = text.match(pattern)
+    const found = normalized.match(pattern)
     if (found) {
       for (const value of found) {
         matches.push({ type: 'pii', value: maskValue(value) })
@@ -66,7 +67,7 @@ export function scanText(text: string): ScanResult {
   }
 
   for (const pattern of PROHIBITED_CONTENT_PATTERNS) {
-    const found = text.match(pattern)
+    const found = normalized.match(pattern)
     if (found) {
       for (const value of found) {
         matches.push({ type: 'prohibited', value })
@@ -84,10 +85,11 @@ export function scanText(text: string): ScanResult {
 }
 
 export function scanPromptForSafety(text: string): { safe: boolean; filtered: string; violations: string[] } {
-  const result = scanText(text)
+  const normalized = text.normalize('NFKC')
+  const result = scanText(normalized)
   if (result.safe) return { safe: true, filtered: text, violations: [] }
 
-  let filtered = text
+  let filtered = normalized
   const violations: string[] = []
 
   for (const pattern of API_KEY_PATTERNS) {
