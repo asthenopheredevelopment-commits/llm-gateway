@@ -1,0 +1,22 @@
+{
+  "name": "llm-gateway",
+  "version": "1.0.0",
+  "description": "Model-Agnostic LLM Gateway & Policy Guardrail Proxy — enterprise-grade API gateway with circuit breakers, streaming middleware, and security policy enforcement across OpenAI, Anthropic, and local models",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit --strict",
+    "typecheck": "tsc --noEmit --strict",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "node --loader ts-node/esm src/index.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vitest": "^3.0.0",
+    "@types/node": "^22.0.0"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  }
+}
